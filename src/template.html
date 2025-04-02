@@ -8,12 +8,29 @@
 </head>
 
 <body>
+    <dialog>
+        <div id="dialog-container">
+            <label for="title">Title:
+                <input name="text" type="text" id="title" minlength="1">
+            </label>
+            <label for="description">Description:
+                <textarea name="description" id="description" rows="5"></textarea>
+            </label>
+            <label for="priority"> Priority: </label>
+            <div id="priority-button-holder">
+                <button id="priority" class="low">Low</button>
+                <button id="priority" class="medium">Medium</button>
+                <button id="priority" class="high">High</button>
+            </div>
+            <label for="date">Due:</label>
+            <input type="date" name="date" id="date">
+            <button type="button" id="submit">Confirm</button>
+        </div>
+    </dialog>
     <div id="sidebar">
         <button id="new-project-button">+ New To-Do</button>
     </div>
     <div id="notebook-container">
-        <header>title</header>
-        <div id="notebook">notebook</div>
     </div>
 </body>
 
