@@ -1,0 +1,44 @@
+body{
+    margin:0;
+    height: 100dvh;
+    display: flex;
+}
+
+#sidebar{
+    display: flex;
+    height: 100%;
+    width: fit-content;
+    padding:10px;
+    background-image: linear-gradient(rgb(148,102,87), rgb(77,52,45),  rgb(77,52,45),  rgb(77,52,45), rgb(46, 31, 27));
+}
+
+#new-project-button{
+    background-color:rgb(77,52,45,255);
+    border-radius: 5px;
+    border: 1px solid black;
+    font-weight: 900;
+    text-align: center;
+    height: fit-content;
+    color: white;
+    transition: 0.2s;
+    transform: scale(1.01);
+}
+#new-project-button:hover{
+    transform: scale(1.1);
+    cursor: pointer;
+}
+#new-project-button:active{
+    background-color:rgb(57, 38, 33);
+}
+
+#notebook{
+
+}
+#notebook-container{
+    background-image: linear-gradient(rgb(245,242,197), rgb(246,242,169));
+    flex: 1 1 0;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-rows: min-content 1fr;
+}
