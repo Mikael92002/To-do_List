@@ -62,6 +62,34 @@ const displayLogic = (function () {
         //header:
         let headerDiv = document.createElement("header");
         headerDiv.id = "header";
+        const trash = document.createElement("button");
+        trash.textContent = "DELETE";
+        trash.classList.add(ToDoObject.uuid);
+        //delete logic:
+        trash.addEventListener("click", (event) =>{
+            for(let i = 0;i<ToDoDivsArray.length;i++){
+                if(trash.classList.contains(ToDoDivsArray[i].uuid)){
+                    ToDoDivsArray.splice(i,1);
+                }
+            };
+            for(let i = 0;i<ToDoArray.length;i++){
+                if(trash.classList.contains(ToDoArray[i].uuid)){
+                    ToDoArray.splice(i,1);
+                };
+            };
+            for(let i = 0;i<sidebar.children.length;i++){
+                if(trash.classList.contains(sidebar.children[i].id)){
+                    sidebar.removeChild(sidebar.children[i]);
+                }
+            };
+
+            while(notebookContainer.firstChild){
+                notebookContainer.removeChild(notebookContainer.lastChild);
+            }
+            console.log(ToDoArray);
+            console.log(ToDoDivsArray);
+            console.log(sidebar.children);
+        })
 
         //notebook:
         let notebook = document.createElement("div");
@@ -79,27 +107,26 @@ const displayLogic = (function () {
 
 
         //append items to screen:
-        header.append(title.value);
+        header.append(title.value, trash);
         notebook.append(description.value);
 
 
         //sidebar div:
         const sideBarDiv = document.createElement("div");
-        sideBarDiv.id = "sidebar-divs";
-        sideBarDiv.classList.add(ToDoObject.uuid);
+        sideBarDiv.id = ToDoObject.uuid;
+        sideBarDiv.classList.add("sidebar-divs");
         if(currentPriority.textContent === "Low"){
-            sideBarDiv.style.borderLeft = "2px solid green";
+            sideBarDiv.style.borderLeft = "1rem solid rgb(0, 49, 1)";
         }
         else if(currentPriority.textContent === "Medium"){
-            sideBarDiv.style.borderLeft = "2px solid yellow";
+            sideBarDiv.style.borderLeft = "1rem solid rgb(96, 101, 0)";
         }
-        else sideBarDiv.style.borderLeft = "2px solid red";
-        console.log(currentPriority.textContent);
+        else sideBarDiv.style.borderLeft = "1rem solid rgb(85, 0, 0)";
         sideBarDiv.append(title.value);
         sidebar.append(sideBarDiv);
         sideBarDiv.addEventListener("click", () => {
             for (let i = 0; i < ToDoDivsArray.length; i++) {
-                if (sideBarDiv.classList.contains(ToDoDivsArray[i].uuid)) {
+                if (sideBarDiv.id === ToDoDivsArray[i].uuid) {
                     while(notebookContainer.firstChild){
                         notebookContainer.removeChild(notebookContainer.lastChild);
                     }

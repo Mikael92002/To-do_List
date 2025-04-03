@@ -55,7 +55,7 @@ button:active {
     width: fit-content;
     background-image: linear-gradient(rgb(148, 102, 87), rgb(77, 52, 45), rgb(77, 52, 45), rgb(77, 52, 45), rgb(46, 31, 27));
 }
-#sidebar-divs{
+.sidebar-divs{
 background: linear-gradient(rgb(148, 102, 87), rgb(77, 52, 45), rgb(77, 52, 45), rgb(77, 52, 45), rgb(46, 31, 27));
 padding:10px;
 color:white;
@@ -64,7 +64,7 @@ text-align: center;
 border-radius: 1rem;
 margin: 0.5rem 0.5rem;
 }
-#sidebar-divs:hover{
+.sidebar-divs:hover{
     background: linear-gradient(rgb(69, 47, 40), rgb(45, 30, 26), rgb(45, 30, 26), rgb(0, 0, 0), rgb(46, 31, 27));
     cursor: pointer;
     transform: scale(1.08);
@@ -114,9 +114,18 @@ margin: 0.5rem 0.5rem;
     background-image: linear-gradient(rgb(148, 102, 87), rgb(77, 52, 45), rgb(77, 52, 45), rgb(77, 52, 45), rgb(46, 31, 27));
     color: white;
     padding: 5px;
-    text-align: center;
     font-weight: 900;
     font-size: 1.5rem;
+    position: relative;
+    text-align: center;
+}
+#header>:first-child{
+    display: flex;
+    position:absolute;
+    right:0;
+    bottom:-10%;
+    background-color: rgb(112, 0, 0);
+    font-size: large;
 }
 
 
