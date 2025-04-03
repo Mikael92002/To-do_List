@@ -4,6 +4,24 @@ body {
     display: flex;
 }
 
+@keyframes fadeIn {
+    0% {
+        opacity: 0
+    }
+
+    ;
+
+    100% {
+        opacity: 1
+    }
+
+    ;
+}
+
+div {
+    animation: fadeIn 0.4s;
+}
+
 button {
     background-color: rgb(77, 52, 45, 255);
     border-radius: 5px;
@@ -21,7 +39,8 @@ button:hover {
     transform: scale(1.1);
     cursor: pointer;
 }
-button:active{
+
+button:active {
     background-color: rgb(57, 38, 33);
     transition: 0.1s;
     transform: scale(1.06);
@@ -29,9 +48,25 @@ button:active{
 
 #sidebar {
     display: flex;
+    flex: 0 0 15%;
     height: 100%;
+    flex-direction: column;
     width: fit-content;
     background-image: linear-gradient(rgb(148, 102, 87), rgb(77, 52, 45), rgb(77, 52, 45), rgb(77, 52, 45), rgb(46, 31, 27));
+}
+#sidebar-divs{
+background: linear-gradient(rgb(148, 102, 87), rgb(77, 52, 45), rgb(77, 52, 45), rgb(77, 52, 45), rgb(46, 31, 27));
+padding:10px;
+color:white;
+font-weight: 900;
+text-align: center;
+border-radius: 1rem;
+margin: 0.5rem 0.5rem;
+}
+#sidebar-divs:hover{
+    background: linear-gradient(rgb(69, 47, 40), rgb(45, 30, 26), rgb(45, 30, 26), rgb(0, 0, 0), rgb(46, 31, 27));
+    cursor: pointer;
+    transform: scale(1.08);
 }
 
 #new-project-button {
@@ -45,6 +80,7 @@ button:active{
     transition: 0.2s;
     transform: scale(1.01);
     margin: 10px;
+    font-size: 1.25rem;
 }
 
 #new-project-button:hover {
@@ -62,10 +98,15 @@ button:active{
     display: grid;
     grid-template-columns: 1fr;
     grid-auto-rows: min-content 1fr;
+    overflow-y: scroll;
 }
 
 #notebook {
-    background-image: linear-gradient(rgb(245, 242, 197), rgb(246, 242, 169));
+    background: repeating-linear-gradient(rgb(245, 242, 197), rgb(246, 242, 169) 31px, rgba(0, 0, 0, 0.461) 31px, rgba(0, 0, 0, 0.425) 32px);
+    outline: 0;
+    line-height: 32px;
+    font-size: 22px;
+    padding: 0px 10px;
 }
 
 #header {
@@ -78,17 +119,20 @@ button:active{
 }
 
 
-#dialog-container{
+#dialog-container {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
+
 label {
     display: block;
     font-weight: 900;
     text-align: center;
 }
-input, textarea{
+
+input,
+textarea {
     display: block;
     pointer-events: all;
 }
@@ -101,13 +145,15 @@ input, textarea{
     align-self: center;
     padding: 5px;
 }
-#priority-button-holder{
+
+#priority-button-holder {
     display: flex;
     justify-content: space-between;
 }
-#priority{
+
+#priority {
     appearance: none;
-    width:fit-content;
+    width: fit-content;
     margin: 0;
     align-self: center;
     justify-self: center;

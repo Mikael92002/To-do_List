@@ -41,7 +41,10 @@ const displayLogic = (function () {
     const title = document.querySelector("#title");
     const description = document.querySelector("#description");
     const low = document.querySelector(".low");
+    const medium = document.querySelector(".medium");
+    const high = document.querySelector(".high");
     const date = document.querySelector("#date");
+    const sidebar = document.querySelector("#sidebar");
 
     confirm.addEventListener("click", () =>{
         //wipe screen:
@@ -50,43 +53,53 @@ const displayLogic = (function () {
                 ToDoDivsArray[ToDoDivsArray.length - 1].getHeader(),
                 ToDoDivsArray[ToDoDivsArray.length - 1].getNotebook());
         };
-        //append new items:
+
         //header:
         const headerDiv = document.createElement("header");
         headerDiv.id = "header";
 
-        //notebook div:
+        //notebook:
         const notebook = document.createElement("div");
         notebook.id = "notebook";
-        for(let i = 0;i<20;i++){
-            const divPosition = (i)/20 * 100;
-            console.log(divPosition);
-            const lineDiv = document.createElement("div");
-            lineDiv.style.position = "relative";
-            lineDiv.style.top = `${divPosition}%`;
-            lineDiv.style.width = "100%";
-            lineDiv.style.height = "0.5px";
-            lineDiv.style.backgroundColor = "black";
-            notebook.append(lineDiv);
-        }
+        notebook.contentEditable = "true";
 
-
+        //ToDo div:
         let ToDoDiv = new ToDoDivs(headerDiv, notebook);
         ToDoDivsArray.push(ToDoDiv);
         notebookContainer.append(headerDiv, notebook);
         if(title.value.trim() === ""){
             title.value = "No title";
         }
+        //ToDoObject:
         let ToDoObject = new ToDo(title.value, description.value, date.value, low.textContent);
         ToDoArray.push(ToDoObject);
+
+        //append items to screen:
+        header.append(title.value);
+        notebook.append(description.value);
+
         for(let i = 0;i<ToDoArray.length;i++){
             console.log(ToDoArray[i]);
         }
+
+        //sidebar div:
+        const sideBarDiv = document.createElement("div");
+        sideBarDiv.id = "sidebar-divs";
+        sideBarDiv.append(title.value);
+        sidebar.append(sideBarDiv);
+
+        //reset dialog fields:
         title.value = "";
         description.value = "";
         date.value="";
         dialog.close();
     });
+
+    //priority buttons event-handling:
+    const priorityDiv = document.querySelector("#priority-button-holder");
+    priorityDiv.addEventListener("click", (event) =>{
+        console.log(event.target);
+    })
 
     class ToDo {
 
