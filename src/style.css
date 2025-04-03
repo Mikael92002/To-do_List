@@ -106,6 +106,7 @@ input, textarea{
     justify-content: space-between;
 }
 #priority{
+    appearance: none;
     width:fit-content;
     margin: 0;
     align-self: center;
