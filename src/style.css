@@ -2,6 +2,7 @@ body {
     margin: 0;
     height: 100dvh;
     display: flex;
+    background-color: rgb(246, 242, 169);    
 }
 
 @keyframes fadeIn {

@@ -14,7 +14,7 @@ const displayLogic = (function () {
 
     //class to store header and notebook divs, object gets stored in ToDoDivsArray:
     class ToDoDivs {
-
+        uuid;
         constructor(header, notebook) {
             this.header = header;
             this.notebook = notebook;
@@ -25,6 +25,9 @@ const displayLogic = (function () {
         }
         getNotebook() {
             return this.notebook;
+        }
+        setUUID(uuid) {
+            this.uuid = uuid;
         }
     }
 
@@ -46,62 +49,92 @@ const displayLogic = (function () {
     const date = document.querySelector("#date");
     const sidebar = document.querySelector("#sidebar");
 
-    confirm.addEventListener("click", () =>{
+    confirm.addEventListener("click", () => {
         //wipe screen:
-        if (ToDoDivsArray.length > 0) {
-            removeChildren(notebookContainer,
-                ToDoDivsArray[ToDoDivsArray.length - 1].getHeader(),
-                ToDoDivsArray[ToDoDivsArray.length - 1].getNotebook());
-        };
+        while(notebookContainer.firstChild){
+            notebookContainer.removeChild(notebookContainer.lastChild);
+        }
+
+        //ToDoObject:
+        let ToDoObject = new ToDo(title.value, description.value, date.value, currentPriority.textContent);
+        ToDoArray.push(ToDoObject);
 
         //header:
-        const headerDiv = document.createElement("header");
+        let headerDiv = document.createElement("header");
         headerDiv.id = "header";
 
         //notebook:
-        const notebook = document.createElement("div");
+        let notebook = document.createElement("div");
         notebook.id = "notebook";
         notebook.contentEditable = "true";
 
         //ToDo div:
         let ToDoDiv = new ToDoDivs(headerDiv, notebook);
+        ToDoDiv.setUUID(ToDoObject.uuid);
         ToDoDivsArray.push(ToDoDiv);
         notebookContainer.append(headerDiv, notebook);
-        if(title.value.trim() === ""){
+        if (title.value.trim() === "") {
             title.value = "No title";
         }
-        //ToDoObject:
-        let ToDoObject = new ToDo(title.value, description.value, date.value, low.textContent);
-        ToDoArray.push(ToDoObject);
+
 
         //append items to screen:
         header.append(title.value);
         notebook.append(description.value);
 
-        for(let i = 0;i<ToDoArray.length;i++){
-            console.log(ToDoArray[i]);
-        }
 
         //sidebar div:
         const sideBarDiv = document.createElement("div");
         sideBarDiv.id = "sidebar-divs";
+        sideBarDiv.classList.add(ToDoObject.uuid);
+        if(currentPriority.textContent === "Low"){
+            sideBarDiv.style.borderLeft = "2px solid green";
+        }
+        else if(currentPriority.textContent === "Medium"){
+            sideBarDiv.style.borderLeft = "2px solid yellow";
+        }
+        else sideBarDiv.style.borderLeft = "2px solid red";
+        console.log(currentPriority.textContent);
         sideBarDiv.append(title.value);
         sidebar.append(sideBarDiv);
+        sideBarDiv.addEventListener("click", () => {
+            for (let i = 0; i < ToDoDivsArray.length; i++) {
+                if (sideBarDiv.classList.contains(ToDoDivsArray[i].uuid)) {
+                    while(notebookContainer.firstChild){
+                        notebookContainer.removeChild(notebookContainer.lastChild);
+                    }
+
+                    headerDiv = ToDoDivsArray[i].getHeader();
+                    notebook = ToDoDivsArray[i].getNotebook();
+                    notebookContainer.append(headerDiv,notebook);
+                };
+            };
+        });
 
         //reset dialog fields:
         title.value = "";
         description.value = "";
-        date.value="";
+        date.value = "";
         dialog.close();
     });
 
+
     //priority buttons event-handling:
     const priorityDiv = document.querySelector("#priority-button-holder");
-    priorityDiv.addEventListener("click", (event) =>{
-        console.log(event.target);
-    })
+    low.style.backgroundColor = "brown";
+    let currentPriority = low;
+    priorityDiv.addEventListener("click", (event) => {
+        if (event.target.id === "priority") {
+            for (let i = 0; i < priorityDiv.children.length; i++) {
+                priorityDiv.children[i].style.backgroundColor = "rgb(245, 242, 197)";
+            }
+            event.target.style.backgroundColor = "brown";
+            currentPriority = event.target;
+        }
+    });
 
     class ToDo {
+        uuid = crypto.randomUUID();
 
         constructor(title, description, dueDate, priority) {
             this.title = title;
@@ -109,7 +142,7 @@ const displayLogic = (function () {
             this.dueDate = dueDate;
             this.priority = priority;
         };
-    
+
         getTitle() {
             return this.title;
         }
@@ -134,7 +167,7 @@ const displayLogic = (function () {
         setPriority(newPriority) {
             this.priority = newPriority;
         }
-    
+
     };
 
 })();
