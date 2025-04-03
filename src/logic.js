@@ -53,44 +53,61 @@ const displayLogic = (function () {
 
 const ToDoLogic = (function () {
     const ToDoArray = [];
+    const confirm = document.querySelector("#submit");
+    const title = document.querySelector("#title");
+    const description = document.querySelector("#description");
+    const priority = document.querySelector(".low");
+    const date = document.querySelector("#date");
+    const dialog = document.querySelector("dialog");
+
+    confirm.addEventListener("click", () =>{
+        let ToDoObject = new ToDo(title.value, description.value, date.value, priority.textContent);
+        ToDoArray.push(ToDoObject);
+        for(let i = 0;i<ToDoArray.length;i++){
+            console.log(ToDoArray[i]);
+        }
+        dialog.close();
+    });
+
+    class ToDo {
+
+        constructor(title, description, dueDate, priority) {
+            this.title = title;
+            this.description = description;
+            this.dueDate = dueDate;
+            this.priority = priority;
+        };
+    
+        getTitle() {
+            return this.title;
+        }
+        setTitle(newTitle) {
+            this.title = newTitle;
+        }
+        getDescription() {
+            return this.description;
+        }
+        setDescription(newDescription) {
+            this.description = newDescription;
+        }
+        getDueDate() {
+            return this.dueDate;
+        }
+        setDueDate(newDueDate) {
+            this.dueDate = newDueDate;
+        }
+        getPriority() {
+            return this.priority;
+        }
+        setPriority(newPriority) {
+            this.priority = newPriority;
+        }
+    
+    };
 
 })();
 
-export class ToDo {
 
-    constructor(title, description, dueDate, priority) {
-        this.title = title;
-        this.description = description;
-        this.dueDate = dueDate;
-        this.priority = priority;
-    };
-
-    getTitle() {
-        return this.title;
-    }
-    setTitle(newTitle) {
-        this.title = newTitle;
-    }
-    getDescription() {
-        return this.description;
-    }
-    setDescription(newDescription) {
-        this.description = newDescription;
-    }
-    getDueDate() {
-        return this.dueDate;
-    }
-    setDueDate(newDueDate) {
-        this.dueDate = newDueDate;
-    }
-    getPriority() {
-        return this.priority;
-    }
-    setPriority(newPriority) {
-        this.priority = newPriority;
-    }
-
-};
 
 export { ToDoLogic };
 export { displayLogic };

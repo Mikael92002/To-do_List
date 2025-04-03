@@ -87,7 +87,6 @@ label {
     display: block;
     font-weight: 900;
     text-align: center;
-    pointer-events: none;
 }
 input, textarea{
     display: block;
