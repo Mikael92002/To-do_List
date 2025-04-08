@@ -51,6 +51,7 @@ const logic = (function () {
         }
 
         addToScreen(id, headerTitle, notebookDescription) {
+
             const header = document.createElement("header");
             header.textContent = headerTitle;
             const trash = document.createElement("button");
@@ -77,6 +78,37 @@ const logic = (function () {
                 this.notebookContainer.removeChild(this.notebookContainer.lastChild);
             }
         };
+
+        addToSideBar(){
+            //sidebar:
+            const sideBar = document.querySelector("#sidebar");
+            const sideBarDiv = document.createElement("div");
+            sideBarDiv.id = id;
+            sideBarDiv.classList.add("sidebar-divs");
+            sideBarDiv.append(headerTitle);
+            sideBarDiv.addEventListener("click", () => {
+                // console.log(this.model);
+                // console.log("sidebar div id: " + sideBarDiv.id);
+                const currentTask = this.taskFinder(sideBarDiv.id);
+                this.removeFromScreen();
+                this.addToScreen(id, currentTask.title.value, currentTask.description.value);
+            });
+            sideBar.append(sideBarDiv);
+
+        }
+
+        taskFinder(taskID) {
+            let currentTask = null;
+            let arr = this.model.getAllTasks();
+            for (let i = 0; i < arr.length; i++) {
+                if (arr[i].id === taskID) {
+                    currentTask = arr[i];
+                }
+            }
+            if (currentTask === null) throw new Error("task not found");
+            else return currentTask;
+        }
+
     };
 
     class ToDoController {
@@ -95,6 +127,8 @@ const logic = (function () {
             this.confirmButton.addEventListener("click", () => {
                 this.confirmPress();
             });
+
+            //add sidebar logic here: !!!
         };
 
         confirmPress() {
