@@ -110,7 +110,7 @@ margin: 0.5rem 0.5rem;
     padding: 0px 10px;
 }
 
-#header {
+header {
     background-image: linear-gradient(rgb(148, 102, 87), rgb(77, 52, 45), rgb(77, 52, 45), rgb(77, 52, 45), rgb(46, 31, 27));
     color: white;
     padding: 5px;
@@ -119,7 +119,7 @@ margin: 0.5rem 0.5rem;
     position: relative;
     text-align: center;
 }
-#header>:first-child{
+header>:first-child{
     display: flex;
     position:absolute;
     right:0;

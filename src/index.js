@@ -1,2 +1,2 @@
 import "./style.css";
-import { displayLogic } from "./logic";
+import { logic } from "./logic";
