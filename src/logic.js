@@ -42,6 +42,13 @@ const logic = (function () {
         getAllTasks() {
             return this.tasks;
         };
+        getTask(id){
+            for(let i = 0;i<this.tasks.length;i++){
+                if(this.tasks[i].id === id){
+                    return this.tasks[i];
+                }
+            }
+        }
     };
 
     class ToDoView {
@@ -64,9 +71,9 @@ const logic = (function () {
             trash.id = id;
 
             trash.addEventListener("click", () => {
-                console.log("id of trash button: " + trash.id);
                 this.model.removeTask(trash.id);
                 this.removeFromScreen();
+                this.removeFromSidebar(trash.id);
             });
 
             header.append(trash);
@@ -79,34 +86,14 @@ const logic = (function () {
             }
         };
 
-        addToSideBar(){
-            //sidebar:
-            const sideBar = document.querySelector("#sidebar");
-            const sideBarDiv = document.createElement("div");
-            sideBarDiv.id = id;
-            sideBarDiv.classList.add("sidebar-divs");
-            sideBarDiv.append(headerTitle);
-            sideBarDiv.addEventListener("click", () => {
-                // console.log(this.model);
-                // console.log("sidebar div id: " + sideBarDiv.id);
-                const currentTask = this.taskFinder(sideBarDiv.id);
-                this.removeFromScreen();
-                this.addToScreen(id, currentTask.title.value, currentTask.description.value);
-            });
-            sideBar.append(sideBarDiv);
-
-        }
-
-        taskFinder(taskID) {
-            let currentTask = null;
-            let arr = this.model.getAllTasks();
-            for (let i = 0; i < arr.length; i++) {
-                if (arr[i].id === taskID) {
-                    currentTask = arr[i];
+        removeFromSidebar(id){
+            const sidebar = document.querySelector("#sidebar");
+            for(let i = 0;i<sidebar.children.length;i++){
+                if(sidebar.children[i].id === id){
+                    sidebar.removeChild(sidebar.children[i]);
+                    break;
                 }
             }
-            if (currentTask === null) throw new Error("task not found");
-            else return currentTask;
         }
 
     };
@@ -129,6 +116,7 @@ const logic = (function () {
             });
 
             //add sidebar logic here: !!!
+            
         };
 
         confirmPress() {
@@ -141,6 +129,7 @@ const logic = (function () {
             const high = document.querySelector(".high");
             const date = document.querySelector("#date");
             const sidebar = document.querySelector("#sidebar");
+            const sideBarDiv = document.createElement("div");
 
             const titleValue = title.value.trim() === "" ? "No title" : title.value;
             let activeButton = "WORK ON THIS";
@@ -152,6 +141,16 @@ const logic = (function () {
             description.value = "";
             activeButton = "";
             date.value = "";
+
+            sideBarDiv.id = task.id;
+            sideBarDiv.classList.add("sidebar-divs");
+            sideBarDiv.append(titleValue);
+            sidebar.append(sideBarDiv);
+            sideBarDiv.addEventListener("click", (event) =>{
+                this.view.removeFromScreen();
+                const task = this.model.getTask(event.target.id);
+                this.view.addToScreen(event.target.id, task.title, task.description);
+            })
         };
     };
 
