@@ -200,7 +200,7 @@ const logic = (function () {
 
         getProject(projectID) {
             for (let i = 0; i < this.projectArray.length; i++) {
-                if (this.projectArray[i].id === projectID) {
+                if (this.projectArray[i].projectID === projectID) {
                     return this.projectArray[i];
                 }
             }
@@ -219,14 +219,58 @@ const logic = (function () {
     }
 
     class ProjectView {
+        projectDivs = [];
 
         constructor(model) {
             this.model = model;
+
+            this.projectName = document.querySelector("#project-name");
+            //this.notebookContainer = document.querySelector("#notebook-container");
+            this.body = document.querySelector("body");
+            //Create new div for project displays:
+            this.projectDisplayDiv = document.createElement("div");
+            this.projectDisplayDiv.id = "project-display-div";
         }
 
-        displayProject(projectID) {
-
+        displayProject(project) {
+            this.model.currentProject = project;
+            //need to do
         }
+
+        addProjectToScreen(id) {
+            const projectButton = document.createElement("button");
+            let projectName = this.projectName.value.trim() === "" ? "No Project Title" : this.projectName.value;
+            projectButton.textContent = projectName;
+            this.projectName.value = "";
+            projectButton.classList.add("project-button");
+            projectButton.id = id;
+
+            projectButton.addEventListener("click", () => {
+                const projectToDisplay = this.model.getProject(projectButton.id);
+                //need to do
+            })
+
+            this.projectDisplayDiv.append(projectButton);
+            this.displayAllProjects();
+        }
+
+        displayAllProjects() {
+            for(let i = 0;i<this.body.children.length;i++){
+                if(this.body.children[i].id === "notebook-container"){
+                    this.body.removeChild(this.body.children[i]);
+                }
+            }
+            for (let i = 0; i < this.projectDivs.length; i++) {
+                this.projectDisplayDiv.append(projectDivs[i]);
+            }
+            this.body.append(this.projectDisplayDiv);
+        }
+
+        removeFromScreen() {
+            while (this.projectDisplayDiv.firstChild) {
+                this.projectDisplayDiv.removeChild(this.projectDisplayDiv.lastChild);
+            }
+        };
     }
 
     class ProjectController {
@@ -247,16 +291,6 @@ const logic = (function () {
 
             this.newProjectButton.addEventListener("click", () => {
                 this.projectDialog.showModal();
-                this.model.addProject();
-                if (!this.taskAppended) {
-                    const taskButton = document.querySelector("#new-task-button");
-                    taskButton.textContent = "+ New Task";
-                    taskButton.style.opacity = "1";
-                    taskButton.style.height = "fit-content";
-                    taskButton.style.width = "auto"
-                    taskButton.style.margin = "5px";
-                    this.taskAppended = true;
-                }
             });
 
 
@@ -269,18 +303,23 @@ const logic = (function () {
                 currentProject.ToDoController.confirmPress();
             });
             this.projectConfirm.addEventListener("click", () => {
-                const projectDiv = document.createElement("div");
-                let projectName = this.projectName.value.trim() === "" ? "No Project Title" : this.projectName.value;
-                projectDiv.textContent = projectName;
-                this.projectName.value = "";
-                projectDiv.classList.add("project-div");
-                this.notebookContainer.append(projectDiv);
+                const project = this.model.addProject();
+                this.view.addProjectToScreen(project.projectID);
+                if (!this.taskAppended) {
+                    const taskButton = document.querySelector("#new-task-button");
+                    taskButton.textContent = "+ New Task";
+                    taskButton.style.opacity = "1";
+                    taskButton.style.height = "fit-content";
+                    taskButton.style.width = "auto"
+                    taskButton.style.margin = "5px";
+                    this.taskAppended = true;
+                }
                 this.projectDialog.close();
             })
 
         }
 
-        newProjectButtonClick() {
+        projectConfirmClick() {
 
         }
     }

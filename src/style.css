@@ -130,6 +130,13 @@ outline: solid 1px black ;
     grid-auto-rows: min-content 1fr;
     overflow-y: scroll;
 }
+#project-display-div{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-auto-rows: min-content;
+    justify-items: center;
+    width:100%;
+}
 
 .notebook {
     background: repeating-linear-gradient(rgb(245, 242, 197), rgb(246, 242, 169) 31px, rgba(0, 0, 0, 0.461) 31px, rgba(0, 0, 0, 0.425) 32px);
@@ -200,7 +207,7 @@ textarea {
     background-color: rgb(245, 242, 197);
     color: black;
 }
-.project-div{
+.project-button{
     background: linear-gradient(rgb(148, 102, 87), rgb(77, 52, 45), rgb(77, 52, 45), rgb(77, 52, 45), rgb(46, 31, 27));
     width:fit-content;
     border-radius: 10px;
