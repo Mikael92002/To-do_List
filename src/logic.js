@@ -339,7 +339,6 @@ const logic = (function () {
 
             projectButton.addEventListener("click", () => {
                 const projectToDisplay = this.model.getProject(projectButton.id);
-                //need to do
                 this.displayProject(projectToDisplay);
             })
 
