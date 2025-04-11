@@ -58,7 +58,7 @@ button:active {
 #sidebar {
     display: flex;
     height: 100%;
-    flex: 0 1 10%;
+    flex: 0 1 0%;
     flex-direction: column;
     background-image: linear-gradient(rgb(148, 102, 87), rgb(77, 52, 45), rgb(77, 52, 45), rgb(77, 52, 45), rgb(46, 31, 27));
     align-items: center;
@@ -92,10 +92,16 @@ outline: solid 1px black ;
     font-size: 1.25rem;
 }
 #all-projects{
-    align-self: center;
+    display: flex;
+    margin:0;
+    margin-top:0.5rem;
 }
-.svg{
-    background-color: white;
+svg{
+    width: 1rem;
+    height:auto;
+    display: flex;
+    align-self: center;
+    justify-self: center;
 }
 
 #new-task-button {
@@ -111,6 +117,10 @@ outline: solid 1px black ;
     transform: scale(1.01);
     margin: 0px;
     opacity: 0;
+}
+#new-task-button:disabled{
+    user-select: none;
+    pointer-events: none;
 }
 
 #new-task-button:hover {
@@ -160,7 +170,7 @@ header>:first-child{
     display: flex;
     position:absolute;
     right:0;
-    bottom:-10%;
+    bottom:0%;
     background-color: rgb(112, 0, 0);
     font-size: large;
 }
@@ -215,4 +225,12 @@ textarea {
     color: white;
     font-weight: 900;
     margin:1rem;
+}
+
+#sidebar-project-name-div{
+background-color:  rgb(245, 242, 197);
+font-family:monospace;
+text-align: center;
+border:0.1px solid black;
+font-weight: 900;
 }

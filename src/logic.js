@@ -57,6 +57,9 @@ const logic = (function () {
                 }
             }
         }
+        getAllSidebarDivs() {
+            return this.sidebar;
+        }
         removeSidebarDiv(id) {
             for (let i = 0; i < this.sidebar.length; i++) {
                 if (this.sidebar[i].id === id) {
@@ -69,10 +72,13 @@ const logic = (function () {
     class ToDoView {
         constructor(model) {
             this.model = model;
-            this.notebookContainer = document.querySelector("#notebook-container");
+            this.notebookContainer = document.createElement("div");
+            this.notebookContainer.id = "notebook-container";
+            this.body = document.querySelector("body");
         }
 
         addToScreen(id, headerTitle, notebookDescription) {
+            this.DOMRefreshView();
 
             const header = document.createElement("header");
             header.textContent = headerTitle;
@@ -93,7 +99,7 @@ const logic = (function () {
             trash.addEventListener("click", () => {
                 this.model.removeTask(trash.id);
                 this.removeFromScreen();
-                this.removeFromSidebar(trash.id);
+                this.removeFromSidebarDivsContainer(trash.id);
                 this.model.removeSidebarDiv(trash.id);
             });
 
@@ -107,12 +113,24 @@ const logic = (function () {
             }
         };
 
-        removeFromSidebar(id) {
-            const sidebar = document.querySelector("#sidebar");
-            for (let i = 0; i < sidebar.children.length; i++) {
-                if (sidebar.children[i].id === id) {
-                    sidebar.removeChild(sidebar.children[i]);
+        removeFromSidebarDivsContainer(id) {
+            const sidebarDivsContainer = document.querySelector("#sidebar-divs-container");
+            for (let i = 0; i < sidebarDivsContainer.children.length; i++) {
+                if (sidebarDivsContainer.children[i].id === id) {
+                    sidebarDivsContainer.removeChild(sidebarDivsContainer.children[i]);
                     break;
+                }
+            }
+        }
+
+
+
+
+        DOMRefreshView() {
+            for (let i = 0; i < this.body.children.length; i++) {
+                if (this.body.children[i].id === "project-display-div") {
+                    this.body.removeChild(this.body.children[i]);
+                    this.body.append(this.notebookContainer);
                 }
             }
         }
@@ -123,48 +141,90 @@ const logic = (function () {
         constructor(model, view) {
             this.model = model;
             this.view = view;
+            this.activeButton = "low";
+            const low = document.querySelector(".low");
+            const medium = document.querySelector(".medium");
+            const high = document.querySelector(".high");
+            this.priorityButtons = document.querySelectorAll("#priority");
 
+            low.addEventListener("click", () => {
+                this.activeButton = "low";
+                this.colorSwitch();
+                low.style.backgroundColor = "brown";
+            })
+            medium.addEventListener("click", () => {
+                this.activeButton = "medium";
+                this.colorSwitch();
+                medium.style.backgroundColor = "brown";
+            })
+            high.addEventListener("click", () => {
+                this.activeButton = "high";
+                this.colorSwitch();
+                high.style.backgroundColor = "brown";
+            })
 
         };
 
         confirmPress() {
+            this.view.DOMRefreshView();
             this.view.removeFromScreen();
 
             const title = document.querySelector("#title");
             const description = document.querySelector("#description");
-            const low = document.querySelector(".low");
-            const medium = document.querySelector(".medium");
-            const high = document.querySelector(".high");
             const date = document.querySelector("#date");
-            const sidebar = document.querySelector("#sidebar");
+            const sidebarDivsContainer = document.querySelector("#sidebar-divs-container");
             const sideBarDiv = document.createElement("div");
             const Todialog = document.querySelector("#to-do-dialog");
 
             const titleValue = title.value.trim() === "" ? "No Title" : title.value;
-            let activeButton = "WORK ON THIS";
+            const dateValue = date.value === "" ? "No due date" : date.value;
 
-            const task = this.model.addTask(titleValue, description.value, date.value, activeButton);
+            const task = this.model.addTask(titleValue, description.value, date.value, this.activeButton);
             this.view.addToScreen(task.id, titleValue, description.value);
             Todialog.close();
-            title.value = "";
-            description.value = "";
-            activeButton = "";
-            date.value = "";
+
+            const dateDiv = document.createElement("div");
+            dateDiv.textContent = dateValue;
+            dateDiv.style.color = "gray";
+            dateDiv.style.pointerEvents = "none";
 
             sideBarDiv.id = task.id;
+            sideBarDiv.style.borderLeft = "1px solid " + this.returnColorForSidebar();
             sideBarDiv.classList.add("sidebar-divs");
-            sideBarDiv.append(titleValue);
-            sidebar.append(sideBarDiv);
+            sideBarDiv.append(titleValue, dateDiv);
+            sidebarDivsContainer.append(sideBarDiv);
             sideBarDiv.addEventListener("click", (event) => {
                 this.view.removeFromScreen();
                 const task = this.model.getTask(event.target.id);
                 this.view.addToScreen(event.target.id, task.title, task.description);
             });
             this.model.sidebar.push(sideBarDiv);
+            title.value = "";
+            description.value = "";
+            this.activeButton = "low";
+            this.colorSwitch();
+            date.value = "";
         };
+
+        colorSwitch() {
+            this.priorityButtons.forEach((button) => {
+                button.style.backgroundColor = "rgb(245, 242, 197)"
+            })
+        }
+        returnColorForSidebar() {
+            if (this.activeButton === "low") {
+                return "green";
+            }
+            else if (this.activeButton === "medium") {
+                return "yellow";
+            }
+            else return "red";
+        }
     };
 
     class Project {
+        name;
+
         constructor(ToDoManager, ToDoView, ToDoController) {
             this.projectID = crypto.randomUUID();
             this.ToDoManager = ToDoManager;
@@ -207,10 +267,11 @@ const logic = (function () {
         }
         removeProject(projectID) {
             for (let i = 0; i < this.projectArray.length; i++) {
-                if (this.projectArray[i].id === projectID) {
+                if (this.projectArray[i].projectID === projectID) {
                     this.projectArray.splice(i, 1);
                 }
             }
+            this.currentProject = null;
         }
 
         getCurrentProject() {
@@ -220,27 +281,58 @@ const logic = (function () {
 
     class ProjectView {
         projectDivs = [];
+        taskAppended = false;
 
         constructor(model) {
             this.model = model;
 
             this.projectName = document.querySelector("#project-name");
-            //this.notebookContainer = document.querySelector("#notebook-container");
             this.body = document.querySelector("body");
             //Create new div for project displays:
             this.projectDisplayDiv = document.createElement("div");
             this.projectDisplayDiv.id = "project-display-div";
+            this.newTaskButton = document.querySelector("#new-task-button");
+            this.Todialog = document.querySelector("#to-do-dialog");
+
+            this.newTaskButton.addEventListener("click", () => {
+                this.Todialog.showModal();
+            });
         }
 
         displayProject(project) {
+            if (!this.taskAppended) {
+                this.taskButtonEnable();
+            }
             this.model.currentProject = project;
-            //need to do
+            this.clearSidebarDivsContainer();
+            const sideBarArray = this.model.currentProject.ToDoManager.getAllSidebarDivs();
+            const sidebarDivsContainer = document.querySelector("#sidebar-divs-container");
+            const sidebarProjectNameDiv = document.createElement("div");
+            const sidebarProjectDeleteButton = document.createElement("button");
+            sidebarProjectDeleteButton.textContent = "DELETE";
+            sidebarProjectDeleteButton.style.backgroundColor = "red";
+            sidebarProjectDeleteButton.addEventListener("click", () => {
+                this.removeProjectFromProjectDivsArray(this.model.currentProject.projectID);
+                this.model.removeProject(this.model.currentProject.projectID);
+                this.clearSidebarDivsContainer();
+                this.displayAllProjects();
+                this.taskButtonDisable();
+            })
+
+            sidebarProjectNameDiv.textContent = this.model.currentProject.name;
+            sidebarProjectNameDiv.append(sidebarProjectDeleteButton);
+            sidebarProjectNameDiv.id = "sidebar-project-name-div"
+            sidebarDivsContainer.append(sidebarProjectNameDiv);
+            for (let i = 0; i < sideBarArray.length; i++) {
+                sidebarDivsContainer.append(sideBarArray[i]);
+            }
         }
 
         addProjectToScreen(id) {
             const projectButton = document.createElement("button");
             let projectName = this.projectName.value.trim() === "" ? "No Project Title" : this.projectName.value;
             projectButton.textContent = projectName;
+            this.model.getProject(id).name = projectName;
             this.projectName.value = "";
             projectButton.classList.add("project-button");
             projectButton.id = id;
@@ -248,20 +340,23 @@ const logic = (function () {
             projectButton.addEventListener("click", () => {
                 const projectToDisplay = this.model.getProject(projectButton.id);
                 //need to do
+                this.displayProject(projectToDisplay);
             })
 
             this.projectDisplayDiv.append(projectButton);
+            this.projectDivs.push(projectButton);
             this.displayAllProjects();
         }
 
         displayAllProjects() {
-            for(let i = 0;i<this.body.children.length;i++){
-                if(this.body.children[i].id === "notebook-container"){
+            this.removeFromScreen();
+            for (let i = 0; i < this.body.children.length; i++) {
+                if (this.body.children[i].id === "notebook-container") {
                     this.body.removeChild(this.body.children[i]);
                 }
             }
             for (let i = 0; i < this.projectDivs.length; i++) {
-                this.projectDisplayDiv.append(projectDivs[i]);
+                this.projectDisplayDiv.append(this.projectDivs[i]);
             }
             this.body.append(this.projectDisplayDiv);
         }
@@ -270,32 +365,60 @@ const logic = (function () {
             while (this.projectDisplayDiv.firstChild) {
                 this.projectDisplayDiv.removeChild(this.projectDisplayDiv.lastChild);
             }
-        };
+        }
+
+        removeProjectFromProjectDivsArray(id) {
+            for (let i = 0; i < this.projectDivs.length; i++) {
+                if (this.projectDivs[i].id === id) {
+                    this.projectDivs.splice(i, 1);
+                }
+            }
+        }
+
+        taskButtonEnable() {
+            this.newTaskButton.textContent = "+ New Task";
+            this.newTaskButton.style.opacity = "1";
+            this.newTaskButton.style.height = "fit-content";
+            this.newTaskButton.style.width = "auto"
+            this.newTaskButton.style.margin = "5px";
+            this.newTaskButton.disabled = false;
+            this.newTaskButton.taskAppended = true;
+        }
+        taskButtonDisable() {
+            this.newTaskButton.textContent = "";
+            this.newTaskButton.style.opacity = "0";
+            this.newTaskButton.style.height = "0px";
+            this.newTaskButton.style.width = "auto"
+            this.newTaskButton.style.margin = "0px";
+            this.newTaskButton.disabled = true;
+            this.newTaskButton.taskAppended = false;
+        }
+
+        clearSidebarDivsContainer() {
+            const sidebarDivsContainer = document.querySelector("#sidebar-divs-container");
+            console.log(sidebarDivsContainer.children.length);
+            while (sidebarDivsContainer.firstChild) {
+                sidebarDivsContainer.removeChild(sidebarDivsContainer.lastChild);
+            }
+        }
     }
 
     class ProjectController {
-        taskAppended = false;
 
         constructor(model, view) {
             this.model = model;
             this.view = view;
 
             this.newProjectButton = document.querySelector("#new-project-button");
-            this.newTaskButton = document.querySelector("#new-task-button");
             this.confirmButton = document.querySelector("#submit");
-            this.Todialog = document.querySelector("#to-do-dialog");
             this.projectDialog = document.querySelector("#project-dialog");
             this.projectName = document.querySelector("#project-name");
             this.notebookContainer = document.querySelector("#notebook-container");
             this.projectConfirm = document.querySelector("#project-name-confirm");
+            this.allProjectsButton = document.querySelector("#all-projects");
 
             this.newProjectButton.addEventListener("click", () => {
                 this.projectDialog.showModal();
-            });
-
-
-            this.newTaskButton.addEventListener("click", () => {
-                this.Todialog.showModal();
             });
 
             this.confirmButton.addEventListener("click", () => {
@@ -305,23 +428,14 @@ const logic = (function () {
             this.projectConfirm.addEventListener("click", () => {
                 const project = this.model.addProject();
                 this.view.addProjectToScreen(project.projectID);
-                if (!this.taskAppended) {
-                    const taskButton = document.querySelector("#new-task-button");
-                    taskButton.textContent = "+ New Task";
-                    taskButton.style.opacity = "1";
-                    taskButton.style.height = "fit-content";
-                    taskButton.style.width = "auto"
-                    taskButton.style.margin = "5px";
-                    this.taskAppended = true;
-                }
                 this.projectDialog.close();
+            })
+            this.allProjectsButton.addEventListener("click", () => {
+                this.view.displayAllProjects();
             })
 
         }
 
-        projectConfirmClick() {
-
-        }
     }
 
     document.addEventListener("DOMContentLoaded", () => {
