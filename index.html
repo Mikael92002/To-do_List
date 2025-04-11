@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+<script defer src="main.js"></script></head>
+
+<body>
+    <dialog id="project-dialog">
+        <div id="dialog-container">
+            <label for="project-name">
+                Enter Project Name:
+            </label>
+            <input type="text" id="project-name">
+            <button id="project-name-confirm">Confirm</button>
+        </div>
+    </dialog>
+    <dialog id="to-do-dialog">
+        <div id="dialog-container">
+            <label for="title">Title:
+                <input name="text" type="text" id="title" minlength="1">
+            </label>
+            <label for="description">Description:
+                <textarea name="description" id="description" rows="5"></textarea>
+            </label>
+            <label> Priority: </label>
+            <div id="priority-button-holder">
+                <button id="priority" class="low">Low</button>
+                <button id="priority" class="medium">Medium</button>
+                <button id="priority" class="high">High</button>
+            </div>
+            <label for="date">Due:</label>
+            <input type="date" name="date" id="date">
+            <button type="button" id="submit">Confirm</button>
+        </div>
+    </dialog>
+    <div id="sidebar">
+        <button id="all-projects"><svg fill="white" height="1rem" width="1rem" version="1.1"
+                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 315 315" xmlns:xlink="http://www.w3.org/1999/xlink"
+                enable-background="new 0 0 315 315">
+                <g>
+                    <path
+                        d="M308,62.841H7c-3.866,0-7,3.134-7,7V217.7c0,3.866,3.134,7,7,7h8.842v20.459c0,3.866,3.134,7,7,7s7-3.134,7-7V224.7   h251.092v20.459c0,3.866,3.134,7,7,7s7-3.134,7-7V224.7H308c3.866,0,7-3.134,7-7V69.841C315,65.975,311.866,62.841,308,62.841z    M14,126.127h287v35.287H14V126.127z M301,76.841v35.286H14V76.841H301z M14,210.7v-35.286h287V210.7H14z" />
+                    <circle cx="157.5" cy="94.957" r="8.29" />
+                    <circle cx="157.5" cy="143.771" r="8.29" />
+                    <circle cx="157.5" cy="194.774" r="8.29" />
+                </g>
+            </svg></button>
+        <div id="project-container">
+            <button id="new-project-button">+ New Project</button>
+        </div>
+        <button id="new-task-button" disabled></button>
+        <div id="separator"></div>
+        <div id="sidebar-divs-container"></div>
+    </div>
+    <div id="notebook-container">
+    </div>
+</body>
+</html>
